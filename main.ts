@@ -24,7 +24,7 @@ const DEFAULT_SETTINGS: ObsidianAnnotatorSettings = {
 
 export default class ObsidianAnnotator extends Plugin {
 	settings: ObsidianAnnotatorSettings;
-
+	
 	async activateView() {
 		this.app.workspace.detachLeavesOfType(ANNOTATION_VIEW_TYPE);
 
@@ -39,19 +39,28 @@ export default class ObsidianAnnotator extends Plugin {
 	}
 
 	async onload() {
+
+		// Open pdf file in registered view
+		this.registerEvent(this.app.workspace.on("file-open", (file) => {
+			if (file?.extension === "pdf") {
+				this.activateView();
+			}
+		}))
+
 		// This register a view
 		this.registerView(
 			ANNOTATION_VIEW_TYPE,
 			(leaf) => new AnnotationView(leaf)
 		);
 
-		// Aprire la view cliccando sulla ribbon icon
+		// Open the view by clicking on ribbon icon
 		this.addRibbonIcon("dice", "Annotation View", () => {
 			this.activateView();
 		});
 	}
 
 	async onunload() {
+		// Clean up leaf
 		this.app.workspace.detachLeavesOfType(ANNOTATION_VIEW_TYPE);
 	}
 }
