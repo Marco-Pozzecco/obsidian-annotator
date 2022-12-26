@@ -8,6 +8,7 @@ import {
 	Plugin,
 	PluginSettingTab,
 	Setting,
+	TFile,
 	View,
 	ViewCreator,
 	WorkspaceLeaf,
@@ -24,7 +25,8 @@ const DEFAULT_SETTINGS: ObsidianAnnotatorSettings = {
 
 export default class ObsidianAnnotator extends Plugin {
 	settings: ObsidianAnnotatorSettings;
-	
+	openedfile: TFile | null = null;
+
 	async activateView() {
 		this.app.workspace.detachLeavesOfType(ANNOTATION_VIEW_TYPE);
 
@@ -39,18 +41,21 @@ export default class ObsidianAnnotator extends Plugin {
 	}
 
 	async onload() {
-
 		// Open pdf file in registered view
-		this.registerEvent(this.app.workspace.on("file-open", (file) => {
-			if (file?.extension === "pdf") {
-				this.activateView();
-			}
-		}))
+		this.registerEvent(
+			this.app.workspace.on("file-open", (file) => {
+				if (file?.extension === "pdf") {
+					this.openedfile = file;
+					this.activateView();
+				}
+			})
+		);
 
 		// This register a view
 		this.registerView(
 			ANNOTATION_VIEW_TYPE,
-			(leaf) => new AnnotationView(leaf)
+			
+			(leaf) => new AnnotationView(leaf, this.openedfile)
 		);
 
 		// Open the view by clicking on ribbon icon

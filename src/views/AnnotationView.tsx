@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
@@ -8,11 +8,12 @@ import { ReactAnnotationView } from "../react/views/ReactAnnotationView";
 export const ANNOTATION_VIEW_TYPE = "Annotation-View";
 
 export class AnnotationView extends ItemView {
-	
 	root = createRoot(this.containerEl.children[1]);
+	file: TFile | null = null;
 
-	constructor(leaf: WorkspaceLeaf) {
+	constructor(leaf: WorkspaceLeaf, file: TFile | null) {
 		super(leaf);
+		this.file = file
 	}
 
 	getViewType(): string {
@@ -26,12 +27,12 @@ export class AnnotationView extends ItemView {
 	async onOpen() {
 		this.root.render(
 			<React.StrictMode>
-				<ReactAnnotationView />
+				<ReactAnnotationView file={this.file} />
 			</React.StrictMode>
 		);
 	}
 
 	async onClose() {
-		this.root.unmount()
+		this.root.unmount();
 	}
 }
