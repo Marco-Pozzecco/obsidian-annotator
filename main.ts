@@ -25,7 +25,7 @@ const DEFAULT_SETTINGS: ObsidianAnnotatorSettings = {
 
 export default class ObsidianAnnotator extends Plugin {
 	settings: ObsidianAnnotatorSettings;
-	openedfile: TFile | null = null;
+	openedfile: TFile;
 
 	async activateView() {
 		this.app.workspace.detachLeavesOfType(ANNOTATION_VIEW_TYPE);

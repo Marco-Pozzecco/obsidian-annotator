@@ -1,18 +1,32 @@
 import * as React from "react";
-import { useEffect } from "react";
-import { Document } from "react-pdf";
+import { useEffect, useState } from "react";
+import { Document, Page } from "react-pdf";
 
-import { TFile } from "obsidian";
+import { TFile, loadPdfJs } from "obsidian";
 
-export function ReactAnnotationView(props: { file: TFile | null }) {
+
+
+export function ReactAnnotationView(props: { file: TFile }) {
+	const [numPages, setNumPages] = useState<number | null>(null);
+	const [pageNumber, setPageNumber] = useState(1);
+
+	function onDocumentLoadSuccess() {
+		setNumPages(numPages);
+	}
+
 	useEffect(() => {
-		console.log(props.file);
-	});
+		// console.log(app.vault.getResourcePath(props.file));
+		(async () => {
+			await loadPdfJs()
+				.then((res) => console.log(res.PDFWorker.getWorkerSrc()))
+				.catch((e) => console.log(e));
+		})();
+	}, []);
 
 	return (
 		<>
-			<Document>
-				<h1>Questa è la view creata!</h1>
+			<Document file={app.vault.getResourcePath(props.file)}>
+				<Page pageNumber={1} />
 			</Document>
 		</>
 	);

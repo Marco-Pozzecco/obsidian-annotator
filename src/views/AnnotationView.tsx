@@ -9,9 +9,9 @@ export const ANNOTATION_VIEW_TYPE = "Annotation-View";
 
 export class AnnotationView extends ItemView {
 	root = createRoot(this.containerEl.children[1]);
-	file: TFile | null = null;
+	file: TFile
 
-	constructor(leaf: WorkspaceLeaf, file: TFile | null) {
+	constructor(leaf: WorkspaceLeaf, file: TFile) {
 		super(leaf);
 		this.file = file
 	}
